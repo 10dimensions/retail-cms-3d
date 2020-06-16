@@ -4,7 +4,25 @@ var FBXLoader = require("three-fbx-loader");
 //import { FBXLoader } from "./FBXLoader";
 
 var FBXUrl = require("./painting-stand.fbx");
+var plusSign = require("../assets/plus.png")
+
 var tloader = new THREE.TextureLoader();
+
+let loadMarker = () => {
+  var spriteMap = new THREE.TextureLoader();
+
+  spriteMap.load( plusSign, function(textr){
+    debugger;
+      var spriteMaterial = new THREE.SpriteMaterial( { map: textr } );
+      var sprite = new THREE.Sprite( spriteMaterial );
+      
+      sprite.position.set(new THREE.Vector3(-0.15, 0.2, 2));
+      return sprite;
+
+  } );
+  
+}
+
 
 let loadCubemap = () => {
   var path = "https://threejs.org/examples/textures/cube/SwedishRoyalCastle/";
@@ -63,4 +81,4 @@ let createOutline = _ref => {
   return outlineMesh;
 };
 
-export { loadCubemap, createPainting, createPainting2, createOutline };
+export { loadMarker, loadCubemap, createPainting, createPainting2, createOutline };

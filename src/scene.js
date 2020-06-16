@@ -43,7 +43,9 @@ export default class Scene extends Component {
     const interaction = new Interaction(renderer, scene, camera);
 
     var directionalLight = new THREE.DirectionalLight( 0xffffff, 0.5 );
-    scene.add( directionalLight );
+    //scene.add( directionalLight );
+
+    var dynamicObject;
 
     const gloader = new GLTFLoader();
     gloader.load(
@@ -55,7 +57,15 @@ export default class Scene extends Component {
             gltf.scene.scale.z = 0.1;
 
             scene.add( gltf.scene );
-            console.log(scene);
+            dynamicObject = scene.getObjectByName("Dust_Cap");
+            dynamicObject.rotation.y = THREE.Math.degToRad(90);
+
+            var _plus = SceneUtils.loadMarker();
+            _plus.position.set(new THREE.Vector3(-0.15, 0.2, 2));
+            scene.add(_plus);
+
+            console.log(scene.children);
+
         },
         ( xhr ) => {
             // called while loading is progressing
