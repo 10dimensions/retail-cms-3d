@@ -8,18 +8,21 @@ var plusSign = require("../assets/plus.png")
 
 var tloader = new THREE.TextureLoader();
 
-let loadMarker = () => {
-  var spriteMap = new THREE.TextureLoader();
-
-  spriteMap.load( plusSign, function(textr){
-    debugger;
-      var spriteMaterial = new THREE.SpriteMaterial( { map: textr } );
+let loadMarker = (pos, scn, nam) => {
+  
+      var spriteMaterial = new THREE.SpriteMaterial( { map: tloader.load(plusSign) } );
       var sprite = new THREE.Sprite( spriteMaterial );
       
-      sprite.position.set(new THREE.Vector3(-0.15, 0.2, 2));
-      return sprite;
-
-  } );
+      sprite.position.x= pos.x;
+	  sprite.position.y= pos.y;
+	  sprite.position.z= pos.z;
+	  sprite.scale.x = 0.1;
+      sprite.scale.y = 0.1;
+      sprite.scale.z = 0.1;
+	  
+	  sprite.name = nam;
+      
+	  return sprite;
   
 }
 
