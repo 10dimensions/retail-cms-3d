@@ -27,7 +27,8 @@ export default class Scene extends Component {
 
     this.state = {
       podstate: false,
-      sel: false
+      sel: false,
+      typ: 'pdf'
     };
   }
 
@@ -43,8 +44,10 @@ export default class Scene extends Component {
     this.camera = camera;
 
 
-    var renderer = new THREE.WebGLRenderer();
-    renderer.setClearColor (0x3d4582, 1);
+
+    var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.autoClear = false;
+    renderer.setClearColor(0x000000, 0);
     renderer.setSize(window.innerWidth, window.innerHeight);
     this.mount.appendChild(renderer.domElement);
 
@@ -59,17 +62,17 @@ export default class Scene extends Component {
 
     var directionalLight = new THREE.DirectionalLight( 0xffffff, 0.75 );
     directionalLight.position.set(0.5, 0.64, -0.82);
-    scene.add( directionalLight );
+    //scene.add( directionalLight );
 
     var ambientlight = new THREE.AmbientLight( 0x404040 ); // soft white light
-    scene.add( ambientlight );
+    //scene.add( ambientlight );
 
     var dynamicObject;
     var dynamicObject1;
 
     const gloader = new GLTFLoader();
     gloader.load(
-        'http://localhost:3000/assets/airpods.gltf',
+        'http://localhost:3000/assets/airpods_2.gltf',
         ( gltf ) => {
             // called when the resource is loaded
             gltf.scene.scale.x = 0.1;
@@ -78,6 +81,8 @@ export default class Scene extends Component {
 
             scene.add( gltf.scene );
 
+            scene.getObjectByName("Subdivision_Surface1").rotation.z=3.14;
+
             dynamicObject = scene.getObjectByName("AVE_Airpods");
             dynamicObject.position.z = airpod_min;
             
@@ -85,11 +90,19 @@ export default class Scene extends Component {
             dynamicObject1.rotation.x = airpodcase_min;
             //dynamicObject.rotation.y = THREE.Math.degToRad(90);
 
-            this.marker_1 = SceneUtils.loadMarker(new THREE.Vector3(0,-0.1,-0.18), scene, 'pointer');
+            this.marker_1 = SceneUtils.loadMarker(new THREE.Vector3(0,-0.1,0.18), scene, 'pointer');
             scene.add( this.marker_1 );
-            this.marker_1.on('click', (ev) => this.setState({sel: true}) );
+            this.marker_1.on('click', (ev) => { this.setState({sel: true});
+                                                this.setState({typ: 'vid'});
+                                              } );
+
+            this.marker_3 = SceneUtils.loadMarker(new THREE.Vector3(0,-0.1,-0.18), scene, 'pointer');
+            scene.add( this.marker_3 );
+            this.marker_3.on('click', (ev) => { this.setState({sel: true});
+                                                this.setState({typ: 'pdf'});
+                                              } );
             
-            this.marker_2 = SceneUtils.loadMarker(new THREE.Vector3(0.25,0.04,0), scene, 'pointer');
+            this.marker_2 = SceneUtils.loadMarker(new THREE.Vector3(-0.25,0.04,0), scene, 'pointer');
             scene.add( this.marker_2 );
             this.marker_2.on('click', (ev) => this.tRotate(dynamicObject1, dynamicObject, 1000, 50) );	
 
@@ -171,7 +184,7 @@ export default class Scene extends Component {
     return (
     <div>
         <div ref={ref => (this.mount = ref)}>
-          <UI  sel={this.state.sel}  deSel = {this.deSel} />
+          <UI  sel={this.state.sel}  typ={this.state.typ} deSel = {this.deSel} />
         </div>
     </div>
     );
