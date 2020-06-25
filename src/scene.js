@@ -5,7 +5,7 @@ import * as THREE from "three";
 import { Interaction } from "three.interaction";
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
-
+import UI from "./ui";
 //import TWEEN from '@tweenjs/tween.js';
 
 import * as SceneUtils from "./utils/scene-utils";
@@ -26,7 +26,8 @@ export default class Scene extends Component {
     super(props);
 
     this.state = {
-      podstate: false
+      podstate: false,
+      sel: false
     };
   }
 
@@ -43,7 +44,7 @@ export default class Scene extends Component {
 
 
     var renderer = new THREE.WebGLRenderer();
-    renderer.setClearColor (0xbababa, 1);
+    renderer.setClearColor (0x3d4582, 1);
     renderer.setSize(window.innerWidth, window.innerHeight);
     this.mount.appendChild(renderer.domElement);
 
@@ -86,6 +87,7 @@ export default class Scene extends Component {
 
             this.marker_1 = SceneUtils.loadMarker(new THREE.Vector3(0,-0.1,-0.18), scene, 'pointer');
             scene.add( this.marker_1 );
+            this.marker_1.on('click', (ev) => this.setState({sel: true}) );
             
             this.marker_2 = SceneUtils.loadMarker(new THREE.Vector3(0.25,0.04,0), scene, 'pointer');
             scene.add( this.marker_2 );
@@ -103,7 +105,7 @@ export default class Scene extends Component {
     );
     
 
-    camera.position.z = -1;
+    camera.position.z =  1;
 
     var animate = function() {
       requestAnimationFrame(animate);
@@ -117,11 +119,11 @@ export default class Scene extends Component {
   }
 
   initialize() {
-    const { idx } = this.props;
+    
   }
 
   componentDidUpdate(prevProps) {
-    const { idx, sel } = this.props;
+    
   }
   
   tRotate = ( obj, obj1, delay, pause ) => {
@@ -134,7 +136,7 @@ export default class Scene extends Component {
     angle = airpodcase_max;
     pos = airpod_max;
   }
-  else if(this.state.podstate === false)
+  else if(this.state.podstate === true)
   {
     angle = airpodcase_min;
     pos = airpod_min;
@@ -163,8 +165,15 @@ export default class Scene extends Component {
   this.setState({podstate : !this.state.podstate});
 }
 
+  deSel = () => this.setState({sel: false});
 
   render() {
-    return <div ref={ref => (this.mount = ref)} />;
+    return (
+    <div>
+        <div ref={ref => (this.mount = ref)}>
+          <UI  sel={this.state.sel}  deSel = {this.deSel} />
+        </div>
+    </div>
+    );
   }
 }

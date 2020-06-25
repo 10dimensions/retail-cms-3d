@@ -1,41 +1,44 @@
-import React, { Component } from "react";
-import { Button } from "reactstrap";
+import React, { useState } from "react";
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 
-export default class UI extends Component {
-  componentDidMount() {}
+  
+  const UI = (props) => {
+    const {
+      buttonLabel,
+      className,
+      sel,
+      deSel
+    } = props;
+  
+    const [modal, setModal] = useState(true);
+    const toggle = () => {  
+                            deSel();
+                          };
 
-  render() {
-    const { chooseNext, choosePrev, goBack, sel } = this.props;
+    const airpod_pdf = 'https://manuals.coolblue.nl/ae/apple-airpods.pdf';
 
     return (
       <div>
-        {sel === null ? (
+        {sel === true ? (
           <div>
-            <Button
-              variant="primary"
-              style={{ position: "absolute", top: "50%", left: "2%" }}
-              onClick={choosePrev}
-            >
-              {"<<"}
-            </Button>
-            <Button
-              variant="primary"
-              style={{ position: "absolute", top: "50%", right: "2%" }}
-              onClick={chooseNext}
-            >
-              {">>"}
-            </Button>
+            
+            <Modal isOpen={modal} toggle={toggle} className={className}>
+              <ModalHeader toggle={toggle}>Airpod - Unveil</ModalHeader>
+              <ModalBody>
+                <iframe style={{marginLeft:20}} width="420" height="345" src="https://www.youtube.com/embed/IC9urbiVp4M"></iframe>
+              </ModalBody>
+              <ModalFooter>
+                {/*<Button color="primary" onClick={{}}>Do Something</Button>{' '}
+                <Button color="secondary" onClick={{}}>Cancel</Button>
+              */}
+              </ModalFooter>
+            </Modal>
           </div>
         ) : (
-          <Button
-            variant="primary"
-            style={{ position: "absolute", top: "2%", left: "2%" }}
-            onClick={goBack }
-          >
-            {"<--"}
-          </Button>
+          null
         )}
       </div>
     );
   }
-}
+
+export default UI;
