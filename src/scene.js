@@ -72,7 +72,7 @@ export default class Scene extends Component {
 
     const gloader = new GLTFLoader();
     gloader.load(
-        'http://localhost:3000/assets/airpods_2.gltf',
+        process.env.PUBLIC_URL + '/assets/airpods_2.gltf',
         ( gltf ) => {
             // called when the resource is loaded
             gltf.scene.scale.x = 0.1;
