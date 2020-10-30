@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
-import Scene from "./scene";
+import Scene from "./roomscene";
 import UI from "./ui";
 
 class App extends Component {

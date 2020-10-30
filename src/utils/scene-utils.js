@@ -16,9 +16,9 @@ let loadMarker = (pos, scn, nam) => {
       sprite.position.x= pos.x;
 	  sprite.position.y= pos.y;
 	  sprite.position.z= pos.z;
-	  sprite.scale.x = 0.1;
-      sprite.scale.y = 0.1;
-      sprite.scale.z = 0.1;
+	  sprite.scale.x = 10;
+      sprite.scale.y = 10;
+      sprite.scale.z = 10;
 	  
 	  sprite.name = nam;
       

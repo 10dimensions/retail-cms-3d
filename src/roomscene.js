@@ -35,14 +35,14 @@ export default class Scene extends Component {
   componentDidMount() {
     var scene = new THREE.Scene();
     var camera = new THREE.PerspectiveCamera(
-      75,
+      45,
       window.innerWidth / window.innerHeight,
-      0.1,
+      1,
       1000
     );
 
     this.camera = camera;
-
+    
 
 
     var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -72,39 +72,24 @@ export default class Scene extends Component {
 
     const gloader = new GLTFLoader();
     gloader.load(
-        process.env.PUBLIC_URL + '/assets/airpods_2.gltf',
+        process.env.PUBLIC_URL + '/assets/home.gltf',
         ( gltf ) => {
+           
+            var _scnobj = gltf.scene.children[0].children[0];
             // called when the resource is loaded
-            gltf.scene.scale.x = 0.1;
-            gltf.scene.scale.y = 0.1;
-            gltf.scene.scale.z = 0.1;
+            //gltf.scene.children[0].scale.x = 1;
+            //gltf.scene.children[0].scale.y = 1;
+            //gltf.scene.children[0].scale.z = 1;
 
-            scene.add( gltf.scene );
+            scene.add( _scnobj );
+            //this.camera.lookAt(gltf.scene.position);
+            this.camera.position.y=50;
 
-            scene.getObjectByName("Subdivision_Surface1").rotation.z=3.14;
-
-            dynamicObject = scene.getObjectByName("AVE_Airpods");
-            dynamicObject.position.z = airpod_min;
+            this.marker_2 = SceneUtils.loadMarker(new THREE.Vector3(20,20,30), scene, 'pointer');
             
-            dynamicObject1 = scene.getObjectByName("AVE_Airpods_Case_2");
-            dynamicObject1.rotation.x = airpodcase_min;
-            //dynamicObject.rotation.y = THREE.Math.degToRad(90);
-
-            this.marker_1 = SceneUtils.loadMarker(new THREE.Vector3(0,-0.1,0.18), scene, 'pointer');
-            scene.add( this.marker_1 );
-            this.marker_1.on('click', (ev) => { this.setState({sel: true});
-                                                this.setState({typ: 'vid'});
-                                              } );
-
-            this.marker_3 = SceneUtils.loadMarker(new THREE.Vector3(0,-0.1,-0.18), scene, 'pointer');
-            scene.add( this.marker_3 );
-            this.marker_3.on('click', (ev) => { this.setState({sel: true});
-                                                this.setState({typ: 'pdf'});
-                                              } );
-            
-            this.marker_2 = SceneUtils.loadMarker(new THREE.Vector3(-0.25,0.04,0), scene, 'pointer');
             scene.add( this.marker_2 );
-            this.marker_2.on('click', (ev) => this.tRotate(dynamicObject1, dynamicObject, 1000, 50) );	
+            debugger;
+            this.marker_2.on('click', (ev) => this.tRotate(_scnobj.children[0].children[0], _scnobj.children[0].children[0], 1000, 50) );	
 
         },
         ( xhr ) => {
@@ -116,9 +101,22 @@ export default class Scene extends Component {
             console.error( 'An error happened', error );
         },
     );
-    
 
-    camera.position.z =  1;
+    var Tloader = new THREE.TextureLoader();
+    Tloader.load(process.env.PUBLIC_URL + '/assets//underwater.jpg', 
+        function( texture ) {
+        var sphereGeometry = new THREE.SphereGeometry( 500, 60, 40 )
+        var sphereMaterial = new THREE.MeshBasicMaterial({
+             map: texture,
+             side: THREE.DoubleSide
+        })
+        sphereGeometry.scale( -1, 1, 1 );
+        var mesh = new THREE.Mesh( sphereGeometry, sphereMaterial );
+        scene.add( mesh );
+        mesh.position.set( 0, 0, 0 )
+   })
+
+    //camera.position.z =  1;
 
     var animate = function() {
       requestAnimationFrame(animate);
@@ -155,28 +153,46 @@ export default class Scene extends Component {
     pos = airpod_min;
   }
 
-	var rotation = { x: obj.rotation.x };
-	var target = { x: THREE.Math.degToRad(angle) };
+	var rotation = { y: obj.rotation.x };
+	var target = { y: THREE.Math.degToRad(angle) };
   var tween = new TWEEN.Tween(rotation).to(target, 2000);
 	
 	tween.onUpdate(function(){
-		obj.rotation.x = rotation.x;
+		obj.rotation.y = rotation.y;
 	});
 
   tween.start();
 
-  var position = { z: obj1.position.z };
-	var target1 = { z: pos };
-  var tween1 = new TWEEN.Tween(position).to(target1, 2000);
+  // var position = { z: obj1.position.z };
+	// var target1 = { z: pos };
+  // var tween1 = new TWEEN.Tween(position).to(target1, 2000);
 
-  tween1.onUpdate(function(){
-		obj1.position.z = position.z;
-  });
+  // tween1.onUpdate(function(){
+	// 	obj1.position.z = position.z;
+  // });
   
-  tween1.start();
+  // tween1.start();
 
   this.setState({podstate : !this.state.podstate});
 }
+
+  toMove = (obj, dist) => {
+
+    var position = { x : 0, y: 300 };
+    var target = { x : 400, y: 50 };
+    var tween = new TWEEN.Tween(position).to(target, 4000);
+
+    tween.delay(2000);
+
+    tween.onUpdate(function(){
+        //obj.position.x = position.x;
+        obj.position.y = dist.y;
+    });
+
+    tween.start();
+
+
+  }
 
   deSel = () => this.setState({sel: false});
 
